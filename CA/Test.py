@@ -1,23 +1,32 @@
 from collections import Counter
 import random
 import Data,Block
-allPeople=[]
-b3 = Block.Block(0)
-b3.x = 5
-b3.y = 5
-b3.type = True
-allPeople.append(b3)
-
-b4 = Block.Block(1)
-b4.x = 6
-b4.y = 5
-b4.type = True
-allPeople.append(b4)
-for p in allPeople:
-    if p.logo==0:
-        allPeople.remove(p)
-for p in allPeople:
-    print(p.logo)
+x=5
+y=8
+coo=[]
+for i in range(x-1,x+2):
+    for j in range(y-1,y+2):
+        c=[i,j]
+        coo.append(c)
+coo.remove([x,y])
+print(coo)
+# allPeople=[]
+# b3 = Block.Block(0)
+# b3.x = 5
+# b3.y = 5
+# b3.type = True
+# allPeople.append(b3)
+#
+# b4 = Block.Block(1)
+# b4.x = 6
+# b4.y = 5
+# b4.type = True
+# allPeople.append(b4)
+# for p in allPeople:
+#     if p.logo==0:
+#         allPeople.remove(p)
+# for p in allPeople:
+#     print(p.logo)
 # ram={1:131.0,2:232.0,3:333.0,4:144.0,5:535.0,6:66.0,7:77.0,8:8338.0,9:299.0}
 # # a=random.random()
 # # print(a)

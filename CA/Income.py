@@ -1,5 +1,6 @@
 import Data,Direction
 import random
+import math
 class outDirection():
     def outDirection(self,p,allPeople):
 
@@ -110,4 +111,24 @@ class outDirection():
             p.wallIncome[4]=500
             p.wallIncome[1]=500
 
+        pass
+    def countGrend(self,p):
+        p_x=p.x
+        p_y=p.y
+        aroundCoo=[]
+        for i in range(p_x-1,p_x+2):
+            for j in range(p_y-1,p_y+2):
+                c=[i,j]
+        aroundCoo.append(c)
+        aroundCoo.remove([p_x,p_y])
+
+    def parDer_X(self,p_x,p_y):
+        pass
+    def parDer_Y(self,p_x,p_y):
+        pass
+    def V_AB(self,A,B):
+        pass
+    def ABS_AB(self,mn):
+        pass
+    def parDer_L(self,mn,abs_AB):
         pass
