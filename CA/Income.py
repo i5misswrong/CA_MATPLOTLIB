@@ -7,14 +7,17 @@ class outDirection():
         self.countDefine(p) #计算默认方向收益
         self.isNextNull(p,allPeople)#计算下一点是否有行人
         self.countRandom(p)#count random direction income
+        self.countGrend(p)
         self.addIncome(p)#将所有收益加起来
         self.sortDic(p)#对收益进行排序
+        # print(p.grendIncome)
         # print(p.allInComeBySort)
     '''将所有收益加起来'''
     def addIncome(self,p):
         v1=[]#收益1：默认方向收益
         v2=[]#收益2：下一点是否有行人
         v3=[]# randow direction income
+        v4=[]# grend income
         '''遍历行人收益 将收益存入列表v1 v2...中'''
         for i in p.defineDirectionIncome.values():#遍历值 获取收益值
             v1.append(i)#将其添加到v1
@@ -22,7 +25,9 @@ class outDirection():
             v2.append(i)
         for i in p.randomIncome.values():
             v3.append(i)
-        income = list(map(lambda x, y, z: [x + y + z], v1, v2, v3))#将v1 v2对应元素加起来
+        for i in p.grendIncome.values():
+            v4.append(i)
+        income = list(map(lambda  y, z, w: [ y + z + w],  v2, v3, v4))#将v1 v2对应元素加起来
         '''将得到的收益总和（列表）转化为字典 添加到p'''
 
         for key in p.allInCome:
@@ -116,19 +121,56 @@ class outDirection():
         p_x=p.x
         p_y=p.y
         aroundCoo=[]
-        for i in range(p_x-1,p_x+2):
-            for j in range(p_y-1,p_y+2):
-                c=[i,j]
-        aroundCoo.append(c)
-        aroundCoo.remove([p_x,p_y])
+        # for i in range(p_x-1,p_x+2):
+        #     for j in range(p_y-1,p_y+2):
+        #         if p_x==i and p_y==j:
+        #             pass
+        #         else:
+        #             c=[i,j]
+        #             self.ParDer_L(p_x,p_y,c)
+        # aroundCoo.append(c)
+        # aroundCoo.remove([p_x,p_y])
+        aroundCoo.append([0,0])#null
+        aroundCoo.append([p_x-1,p_y+1])#1
+        aroundCoo.append([p_x,p_y+1])#2
+        aroundCoo.append([p_x+1,p_y+1])#3
+        aroundCoo.append([p_x-1,p_y])#4
+        aroundCoo.append([p_x,p_y])#5
+        aroundCoo.append([p_x+1,p_y])#6
+        aroundCoo.append([p_x-1,p_y-1])#7
+        aroundCoo.append([p_x,p_y-1])#8
+        aroundCoo.append([p_x+1,p_y-1])#9
+        p.grendIncome[1]=self.ParDer_L(p_x,p_y,aroundCoo[1])
+        p.grendIncome[2]=self.ParDer_L(p_x,p_y,aroundCoo[2])
+        p.grendIncome[3]=self.ParDer_L(p_x,p_y,aroundCoo[3])
+
+        p.grendIncome[4]=self.ParDer_L(p_x,p_y,aroundCoo[4])
+        p.grendIncome[6]=self.ParDer_L(p_x,p_y,aroundCoo[6])
+
+        p.grendIncome[7]=self.ParDer_L(p_x,p_y,aroundCoo[7])
+        p.grendIncome[8]=self.ParDer_L(p_x,p_y,aroundCoo[8])
+        p.grendIncome[9]=self.ParDer_L(p_x,p_y,aroundCoo[9])
+
 
     def parDer_X(self,p_x,p_y):
-        pass
+        return -2*p_x*math.exp(-((p_x^2+p_y^2)/20))
     def parDer_Y(self,p_x,p_y):
-        pass
-    def V_AB(self,A,B):
-        pass
-    def ABS_AB(self,mn):
-        pass
-    def parDer_L(self,mn,abs_AB):
-        pass
+        return -2*p_y*math.exp(-((p_x^2+p_y^2)/20))
+    # def V_AB(self,A,B):
+    #     return [B[0]-A[0],B[1]-A[1]]
+    #     pass
+    # def ABS_AB(self,v_AB):
+    #     return math.sqrt(v_AB[0]**2+v_AB[1]**2)
+    def ParDer_L(self,p_x,p_y,c):
+        m=c[0]-p_x
+        n=c[1]-p_y
+        v_AB=[m,n]
+        # print("px-",p_x,"m-",m,"***","py-",p_y,"n-",n)
+        abs_AB=math.sqrt(v_AB[0]**2+v_AB[1]**2)
+
+        # print(abs_AB)
+        v_L=[v_AB[0]/abs_AB,v_AB[1]/abs_AB]
+        # print("alpha-",v_L[0],"*****bate-",v_L[1])
+        parDer_L=self.parDer_X(p_x,p_y)*v_L[0]+self.parDer_Y(p_x,p_y)*v_L[1]
+        # print("alpha",self.parDer_X(p_x,p_y),"-------bate",self.parDer_Y(p_x,p_y))
+        return -parDer_L

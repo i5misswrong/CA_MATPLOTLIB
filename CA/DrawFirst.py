@@ -25,7 +25,7 @@ class draw():
         L_x=[]
         L_y=[]
         for p in P:
-            if p.logo==Data.BasicData.LOGO_PEOPLE:
+            if p.logo==Data.LOGO_PEOPLE:
 
                 if p.type:
                     R_x.append(p.x)
@@ -53,8 +53,8 @@ class draw():
 
     def drawWallAndExit(self):
 
-        plt.plot([0,Data.BasicData.ROOM_M],[0,0],'b-')# down
-        plt.plot([0,Data.BasicData.ROOM_M],[Data.BasicData.ROOM_N,Data.BasicData.ROOM_N],'b-')# up
-        plt.plot([0,0],[0,Data.BasicData.ROOM_N],'y--')#left and right
-        plt.plot([Data.BasicData.ROOM_M,Data.BasicData.ROOM_M],[0,Data.BasicData.ROOM_N],'y--')
+        plt.plot([0,Data.ROOM_M],[0,0],'b-')# down
+        plt.plot([0,Data.ROOM_M],[Data.ROOM_N,Data.ROOM_N],'b-')# up
+        plt.plot([0,0],[0,Data.ROOM_N],'y--')#left and right
+        plt.plot([Data.ROOM_M,Data.ROOM_M],[0,Data.ROOM_N],'y--')
         # plt.show()

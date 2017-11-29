@@ -4,12 +4,12 @@ class InitPeople():
     def creatPeople(self):
         allBlock=[]
         allPeople=[]
-        for i in range(1,Data.BasicData.ROOM_M):
-            for j in range(1,Data.BasicData.ROOM_N):
+        for i in range(1,Data.ROOM_M):
+            for j in range(1,Data.ROOM_N):
                 b=Block.Block(1)
                 b.x=i
                 b.y=j
-                if j>Data.BasicData.ROOM_N/2:
+                if j>Data.ROOM_N/2:
                     b.type=False
                 else:
                     b.type=True
@@ -33,16 +33,16 @@ class InitPeople():
         # allPeople.append(b2)
 
         b3 = Block.Block(1)
-        b3.x = 5
+        b3.x = 2
         b3.y = 5
         b3.type = True
         allPeople.append(b3)
 
-        b4 = Block.Block(1)
-        b4.x = 6
-        b4.y = 5
-        b4.type = True
-        allPeople.append(b4)
+        # b4 = Block.Block(1)
+        # b4.x = 6
+        # b4.y = 5
+        # b4.type = True
+        # allPeople.append(b4)
 
         return allPeople
 
