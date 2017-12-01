@@ -14,10 +14,10 @@ allWall=init.creatWall()
 allExit=init.creatExit()
 # while Data.flag:
 
-for p in allPeople:
-    income.outDirection(p,allPeople)
-    direction=max(p.allInComeBySort.items(),key=lambda  x:x[1])[0]
-    print('direction ==',direction)
+# for p in allPeople:
+#     income.outDirection(p,allPeople)
+#     direction=max(p.allInComeBySort.items(),key=lambda  x:x[1])[0]
+#     print('direction ==',direction)
 while Data.flag:
     for p in allPeople:
         income.outDirection(p,allPeople)

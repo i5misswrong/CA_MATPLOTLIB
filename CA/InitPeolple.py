@@ -1,9 +1,11 @@
 import random
 import Data,Block
 class InitPeople():
+    '''初始化随机行人'''
     def creatPeople(self):
-        allBlock=[]
-        allPeople=[]
+        allBlock=[]#用于存放格子
+        allPeople=[]#用于存放行人
+        '''将所有格子全部存入列表'''
         for i in range(1,Data.ROOM_M):
             for j in range(1,Data.ROOM_N):
                 b=Block.Block(1)
@@ -14,10 +16,14 @@ class InitPeople():
                 else:
                     b.type=True
                 allBlock.append(b)
+        '''随机排序'''
         random.shuffle(allBlock)
+        '''取前N个'''
+        '''可有效防止无限产生随机数'''
         allPeople=allBlock[:10]
         return allPeople
 
+    '''产生指定行人'''
     def creatAppointPeo(self):
         allPeople=[]
         # b1=Block.Block(1)
@@ -33,8 +39,8 @@ class InitPeople():
         # allPeople.append(b2)
 
         b3 = Block.Block(1)
-        b3.x = 2
-        b3.y = 5
+        b3.x = 27
+        b3.y = 13
         b3.type = True
         allPeople.append(b3)
 
@@ -45,7 +51,7 @@ class InitPeople():
         # allPeople.append(b4)
 
         return allPeople
-
+    '''产生墙壁'''
     def creatWall(self):
         allWall=[]
         for i in range(5):
@@ -54,6 +60,7 @@ class InitPeople():
             allWall.append(D)
             allWall.append(U)
         return allWall
+    '''产生出口'''
     def creatExit(self):
         allExit=[]
         for i in range(3):
