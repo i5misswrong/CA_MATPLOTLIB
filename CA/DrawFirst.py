@@ -82,4 +82,11 @@ class draw():
                         origin='lower', extent=[-2, Data.ROOM_M+2, -2, Data.ROOM_N+2],
                         vmax=abs(Z1).max(), vmin=-abs(Z1).max())
 
+        c_x=np.arange(0,Data.ROOM_M,0.001)
+        c_y=Data.FX_N+np.sqrt(Data.FX_R**2-(c_x-Data.FX_M)**2)
+        c_y_2 = Data.FX_N - np.sqrt(Data.FX_R ** 2 - (c_x - Data.FX_M) ** 2)
+        plt.plot(c_x,c_y,c='r')
+        plt.plot(c_x,c_y_2,c='r')
+
+
         # plt.show()

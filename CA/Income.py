@@ -3,7 +3,7 @@ import random
 import math
 class outDirection():
     def outDirection(self,p,allPeople):
-
+        self.chickIsInGrend(p)
         self.countDefine(p) #计算默认方向收益
         self.isNextNull(p,allPeople)#计算下一点是否有行人
         self.countRandom(p)#count random direction income
@@ -49,6 +49,10 @@ class outDirection():
         fin=dict(map(lambda x,y:[x,y],k,v))#转化为字典
         p.allInComeBySort=fin#将其存入p
 
+    def chickIsInGrend(self,p):
+        R=(p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2
+        if R<Data.FX_R:
+            p.isInGrend=True
 
 
 

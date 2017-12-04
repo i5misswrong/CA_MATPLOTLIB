@@ -39,8 +39,8 @@ class InitPeople():
         # allPeople.append(b2)
 
         b3 = Block.Block(1)
-        b3.x = 27
-        b3.y = 13
+        b3.x = 18
+        b3.y = 10
         b3.type = True
         allPeople.append(b3)
 

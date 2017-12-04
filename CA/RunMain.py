@@ -8,8 +8,8 @@ init=InitPeolple.InitPeople()
 draw=DrawFirst.draw()
 # move=Rule.PeopleMove()
 income=Income.outDirection()
-allPeople=init.creatPeople()
-# allPeople=init.creatAppointPeo()
+# allPeople=init.creatPeople()
+allPeople=init.creatAppointPeo()
 allWall=init.creatWall()
 allExit=init.creatExit()
 # while Data.flag:
@@ -25,7 +25,8 @@ while Data.flag:
         direction=max(p.allInComeBySort.items(),key=lambda  x:x[1])[0]
         Rule.chickOverAround(p,allPeople)
         Rule.PeopleMove(p,direction)
-        print(p.grendIncome)
+        # print(p.grendIncome)
+        print(p.isInGrend)
         # print(p.allInComeBySort)
     draw.drawPeople(allPeople)
 # for p in allPeople:
