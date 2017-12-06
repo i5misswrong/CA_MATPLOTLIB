@@ -20,7 +20,7 @@ class InitPeople():
         random.shuffle(allBlock)
         '''取前N个'''
         '''可有效防止无限产生随机数'''
-        allPeople=allBlock[:10]
+        allPeople=allBlock[:100]
         return allPeople
 
     '''产生指定行人'''
@@ -39,7 +39,7 @@ class InitPeople():
         # allPeople.append(b2)
 
         b3 = Block.Block(1)
-        b3.x = 18
+        b3.x = 28
         b3.y = 10
         b3.type = True
         allPeople.append(b3)

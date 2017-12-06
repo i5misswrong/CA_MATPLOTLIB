@@ -31,8 +31,16 @@ class outDirection():
             v4.append(i)
         for i in p.wallIncome.values():
             v5.append(i)
-        income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))#将v1 v2 ... 对应元素加起来
+        # income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))#将v1 v2 ... 对应元素加起来
         '''将得到的收益总和（列表）转化为字典 添加到p'''
+        if p.isInGrend:
+            if p.outGrend:
+                income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
+            else:
+                income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))
+        else:
+            income = list(map(lambda x, y, z,  q: [x + y + z + q], v1, v2, v3, v5))
+
 
         for key in p.allInCome:
             p.allInCome[key]=income[key-1][0]
@@ -51,8 +59,16 @@ class outDirection():
 
     def chickIsInGrend(self,p):
         R=(p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2
-        if R<Data.FX_R:
+        if R<=Data.FX_R**2:
             p.isInGrend=True
+        if p.isInGrend:
+            if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2>Data.FX_R**2:
+                p.outGrend=True
+        if p.outGrend:
+            if p.x<Data.ROOM_M:
+                p.type=True
+            else:
+                p.type=False
 
 
 
