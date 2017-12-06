@@ -28,18 +28,25 @@ class draw():
         R_y=[]#y坐标
         L_x=[]#向左移动的行人的x坐标
         L_y=[]#y坐标
+        G_x=[]
+        G_y=[]
         for p in P:#遍历行人列表
             if p.logo==Data.LOGO_PEOPLE:#此行可以省略？
-                if p.type:#如果行人方向为 【右】
-                    R_x.append(p.x)#添加x坐标
-                    R_y.append(p.y)#添加y坐标
-                else:#如果行人方向为【左】
-                    L_x.append(p.x)
-                    L_y.append(p.y)
+                if p.isInGrend:
+                    G_x.append(p.x)
+                    G_y.append(p.y)
+                else:
+                    if p.type:#如果行人方向为 【右】
+                        R_x.append(p.x)#添加x坐标
+                        R_y.append(p.y)#添加y坐标
+                    else:#如果行人方向为【左】
+                        L_x.append(p.x)
+                        L_y.append(p.y)
             # R_x.append(p[0])
             # R_y.append(p[1])
         # plt.figure(figsize=(10,6))
         plt.subplot(1,1,1)#绘图板布局  不知道怎么取消这一行
+        plt.scatter(G_x,G_y,c='k')
         plt.scatter(R_x,R_y,c='r')#绘制行人--散点图
         plt.scatter(L_x,L_y,c='b')
 
@@ -85,6 +92,7 @@ class draw():
         c_x=np.arange(0,Data.ROOM_M,0.001)
         c_y=Data.FX_N+np.sqrt(Data.FX_R**2-(c_x-Data.FX_M)**2)
         c_y_2 = Data.FX_N - np.sqrt(Data.FX_R ** 2 - (c_x - Data.FX_M) ** 2)
+        # print(Data.FX_R)
         plt.plot(c_x,c_y,c='r')
         plt.plot(c_x,c_y_2,c='r')
 
