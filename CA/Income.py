@@ -5,7 +5,7 @@ class outDirection():
     def outDirection(self,p,allPeople):
 
         self.countDefine(p) #计算默认方向收益
-        self.countNewDefine(p)
+        self.countNewDefine(p)#计算新的默认方向收益
         self.isNextNull(p,allPeople)#计算下一点是否有行人
         self.countRandom(p)#count random direction income
         self.countGrend(p)#计算梯度收益
@@ -16,7 +16,7 @@ class outDirection():
         # print(p.allInComeBySort)
     '''将所有收益加起来'''
     def addIncome(self,p):
-        patter=self.outPattern(p)
+        patter=self.outPattern(p)#计算行人移动方案
         v1=[]#收益1：默认方向收益
         v2=[]#收益2：下一点是否有行人
         v3=[]# randow direction income
@@ -37,11 +37,11 @@ class outDirection():
         for i in p.newDefineDirectionIncome.values():
             v6.append(i)
         # income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))#将v1 v2 ... 对应元素加起来
-        if patter==0:
+        if patter==0:#方案0 行人从未见过gauss 正常默认方向移动
             income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
-        elif patter==1:
+        elif patter==1:#方案1 行人见过gauss 并且位于gauss内 沿梯度下降算法移动
             income = list(map(lambda y, z, w, q: [y + z + w + q], v2, v3, v4, v5))
-        else:
+        else:# patter==2 方案3 行人见过gauss并且从gauss范围内移动出来了 沿新的默认方向移动
             income = list(map(lambda y, z, q, r: [y + z + q + r], v2, v3, v5, v6))
         # '''将得到的收益总和（列表）转化为字典 添加到p'''
         # if p.isInGrend:
@@ -91,6 +91,7 @@ class outDirection():
             p.defineDirectionIncome[9]=90
             p.defineDirectionIncome[2]=80
             p.defineDirectionIncome[8]=80
+    '''新的默认方向'''
     def countNewDefine(self,p):
         if p.isNewDefine==1:
             p.newDefineDirectionIncome[4]=100
@@ -234,33 +235,37 @@ class outDirection():
     #         p.isInGrend=True
     #
     #     pass
+    '''行人移动方案计算'''
+    '''检查行人是否看过gauss'''
     def checkIsSeeGuass(self,p):
-        R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
-        if R < Data.FX_R ** 2:
-            p.isSeeGauss = True
+        R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2#获取行人离gauss中心的距离
+        if R < Data.FX_R ** 2:#如果位于gauss内
+            p.isSeeGauss = True#设置行人为见过gauss
+    '''检查行人是否位于gauss内'''
     def countIsOutGrend(self,p):
-        if p.isSeeGauss:
+        if p.isSeeGauss:#如果行人已经见过gauss
             R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
-            if R<=Data.FX_R**2:
-                p.isInGrend=1
+            if R<=Data.FX_R**2:#如果行人位于gauss内
+                p.isInGrend=1#设为1 表示行人位于gauss内
             else:
-                p.isInGrend=2
+                p.isInGrend=2#设为2 表示行人已经见过gauss 并且从gauss内移动出去了  接下来使用新的默认方向
+    '''检查行人位于地图左边还是右边'''
     def countIsNewDefine(self,p):
-        if p.isInGrend==2:
-            if p.x<Data.ROOM_M/2:
+        if p.isInGrend==2:#如果行人已经见过gauss 并且从gauss内移动出去
+            if p.x<Data.ROOM_M/2:#如果位于地图左边
                 p.isNewDefine=1
             else:
                 p.isNewDefine=2
-
+    '''输出行人移动方案'''
     def outPattern(self,p):
-        pattern=0
-        self.checkIsSeeGuass(p)
+        pattern=0#方案代号 默认0 按默认方向移动
+        self.checkIsSeeGuass(p)#调用上边3个方法
         self.countIsOutGrend(p)
         self.countIsNewDefine(p)
-        if p.isInGrend==1:
+        if p.isInGrend==1:#方案1 行人位于gauss内 沿梯度下降算法移动
             pattern=1
-        elif p.isInGrend==2:
+        elif p.isInGrend==2:#方案2 行人见过gauss 并且从gauss内移动出去 用新的默认方向移动
             pattern=2
         else:
-            pattern=0
+            pattern=0# 方案0 默认方案 行人沿着默认方向移动
         return pattern
