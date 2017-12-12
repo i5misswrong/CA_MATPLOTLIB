@@ -3,8 +3,9 @@ import random
 import math
 class outDirection():
     def outDirection(self,p,allPeople):
-        self.chickIsInGrend(p)
+
         self.countDefine(p) #计算默认方向收益
+        self.countNewDefine(p)
         self.isNextNull(p,allPeople)#计算下一点是否有行人
         self.countRandom(p)#count random direction income
         self.countGrend(p)#计算梯度收益
@@ -15,11 +16,13 @@ class outDirection():
         # print(p.allInComeBySort)
     '''将所有收益加起来'''
     def addIncome(self,p):
+        patter=self.outPattern(p)
         v1=[]#收益1：默认方向收益
         v2=[]#收益2：下一点是否有行人
         v3=[]# randow direction income
         v4=[]# grend income
         v5=[]#wall income
+        v6=[]#new define direction income
         '''遍历行人收益 将收益存入列表v1 v2...中'''
         for i in p.defineDirectionIncome.values():#遍历值 获取收益值
             v1.append(i)#将其添加到v1
@@ -31,16 +34,23 @@ class outDirection():
             v4.append(i)
         for i in p.wallIncome.values():
             v5.append(i)
+        for i in p.newDefineDirectionIncome.values():
+            v6.append(i)
         # income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))#将v1 v2 ... 对应元素加起来
-        '''将得到的收益总和（列表）转化为字典 添加到p'''
-        if p.isInGrend:
-            if p.outGrend:
-                income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
-            else:
-                income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))
+        if patter==0:
+            income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
+        elif patter==1:
+            income = list(map(lambda y, z, w, q: [y + z + w + q], v2, v3, v4, v5))
         else:
-            income = list(map(lambda x, y, z,  q: [x + y + z + q], v1, v2, v3, v5))
-
+            income = list(map(lambda y, z, q, r: [y + z + q + r], v2, v3, v5, v6))
+        # '''将得到的收益总和（列表）转化为字典 添加到p'''
+        # if p.isInGrend:
+        #     if p.outGrend:
+        #         income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
+        #     else:
+        #         income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))
+        # else:
+        #     income = list(map(lambda x, y, z,  q: [x + y + z + q], v1, v2, v3, v5))
 
         for key in p.allInCome:
             p.allInCome[key]=income[key-1][0]
@@ -57,18 +67,7 @@ class outDirection():
         fin=dict(map(lambda x,y:[x,y],k,v))#转化为字典
         p.allInComeBySort=fin#将其存入p
 
-    def chickIsInGrend(self,p):
-        R=(p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2
-        if R<=Data.FX_R**2:
-            p.isInGrend=True
-        if p.isInGrend:
-            if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2>Data.FX_R**2:
-                p.outGrend=True
-        if p.outGrend:
-            if p.x<Data.ROOM_M:
-                p.type=True
-            else:
-                p.type=False
+
 
 
 
@@ -91,7 +90,22 @@ class outDirection():
             p.defineDirectionIncome[3]=90
             p.defineDirectionIncome[9]=90
             p.defineDirectionIncome[2]=80
-            p.defineDirectionIncome[9]=80
+            p.defineDirectionIncome[8]=80
+    def countNewDefine(self,p):
+        if p.isNewDefine==1:
+            p.newDefineDirectionIncome[4]=100
+            p.newDefineDirectionIncome[1] = 90
+            p.newDefineDirectionIncome[7] = 90
+            p.newDefineDirectionIncome[2] = 80
+            p.newDefineDirectionIncome[8] = 80
+        elif p.isNewDefine==2:
+            p.newDefineDirectionIncome[6] = 100
+            p.newDefineDirectionIncome[3] = 90
+            p.newDefineDirectionIncome[9] = 90
+            p.newDefineDirectionIncome[2] = 80
+            p.newDefineDirectionIncome[8] = 80
+        else:
+            pass
 
     '''检测下一是否有行人，如果有，设为-1000'''
     def isNextNull(self,p,allPelple):
@@ -201,3 +215,52 @@ class outDirection():
         parDer_L=self.parDer_X(p_x,p_y)*v_L[0]+self.parDer_Y(p_x,p_y)*v_L[1]#方向导数
         # print("alpha",self.parDer_X(p_x,p_y),"-------bate",self.parDer_Y(p_x,p_y))
         return -parDer_L#返回负值
+
+    # def chickIsInGrend(self,p):
+    #     R=(p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2
+    #     if R<=Data.FX_R**2:
+    #         p.isInGrend=True
+    #     if p.isInGrend:
+    #         if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2>Data.FX_R**2:
+    #             p.outGrend=True
+    #     if p.outGrend:
+    #         if p.x<Data.ROOM_M:
+    #             p.type=True
+    #         else:
+    #             p.type=False
+    # def chickIsInGrend(self,p):
+    #     R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
+    #     if R<=Data.FX_R**2:
+    #         p.isInGrend=True
+    #
+    #     pass
+    def checkIsSeeGuass(self,p):
+        R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
+        if R < Data.FX_R ** 2:
+            p.isSeeGauss = True
+    def countIsOutGrend(self,p):
+        if p.isSeeGauss:
+            R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
+            if R<=Data.FX_R**2:
+                p.isInGrend=1
+            else:
+                p.isInGrend=2
+    def countIsNewDefine(self,p):
+        if p.isInGrend==2:
+            if p.x<Data.ROOM_M/2:
+                p.isNewDefine=1
+            else:
+                p.isNewDefine=2
+
+    def outPattern(self,p):
+        pattern=0
+        self.checkIsSeeGuass(p)
+        self.countIsOutGrend(p)
+        self.countIsNewDefine(p)
+        if p.isInGrend==1:
+            pattern=1
+        elif p.isInGrend==2:
+            pattern=2
+        else:
+            pattern=0
+        return pattern
