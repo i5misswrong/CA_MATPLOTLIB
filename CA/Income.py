@@ -4,7 +4,7 @@ import math
 class outDirection():
     def outDirection(self,p,allPeople):
 
-        self.countDefine(p) #计算默认方向收益
+
         self.countNewDefine(p)#计算新的默认方向收益
         self.isNextNull(p,allPeople)#计算下一点是否有行人
         self.countRandom(p)#count random direction income
@@ -16,7 +16,9 @@ class outDirection():
         # print(p.allInComeBySort)
     '''将所有收益加起来'''
     def addIncome(self,p):
+
         patter=self.outPattern(p)#计算行人移动方案
+        self.countDefine(p)  # 计算默认方向收益
         v1=[]#收益1：默认方向收益
         v2=[]#收益2：下一点是否有行人
         v3=[]# randow direction income
@@ -93,6 +95,10 @@ class outDirection():
             p.defineDirectionIncome[8]=80
     '''新的默认方向'''
     def countNewDefine(self,p):
+        if p.x < Data.ROOM_M / 2:  # 如果位于地图左边
+            p.isNewDefine = 1
+        else:
+            p.isNewDefine = 2
         if p.isNewDefine==1:
             p.newDefineDirectionIncome[4]=100
             p.newDefineDirectionIncome[1] = 90
@@ -105,8 +111,6 @@ class outDirection():
             p.newDefineDirectionIncome[9] = 90
             p.newDefineDirectionIncome[2] = 80
             p.newDefineDirectionIncome[8] = 80
-        else:
-            pass
 
     '''检测下一是否有行人，如果有，设为-1000'''
     def isNextNull(self,p,allPelple):
@@ -245,7 +249,7 @@ class outDirection():
     def countIsOutGrend(self,p):
         if p.isSeeGauss:#如果行人已经见过gauss
             R = (p.x - Data.FX_M) ** 2 + (p.y - Data.FX_N) ** 2
-            if R<=Data.FX_R**2:#如果行人位于gauss内
+            if R<Data.FX_R**2:#如果行人位于gauss内
                 p.isInGrend=1#设为1 表示行人位于gauss内
             else:
                 p.isInGrend=2#设为2 表示行人已经见过gauss 并且从gauss内移动出去了  接下来使用新的默认方向
