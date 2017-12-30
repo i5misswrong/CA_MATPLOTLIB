@@ -24,6 +24,7 @@ class draw():
     def drawPeople(self,P=[]):
         plt.clf()#清除数据
         draw.drawFile(self)#绘制高斯函数
+        # draw.drawSecondFile(self)
         R_x=[]#向右移动的行人的x坐标
         R_y=[]#y坐标
         L_x=[]#向左移动的行人的x坐标
@@ -60,7 +61,7 @@ class draw():
         # pauseFig=plt.axes([0.2,0.025,0.1,0.04])
         # pauseFigbutton=Button(pauseFig,'pause',hovercolor='0.5')
         # pauseFigbutton.on_clicked(draw.pauseFigure)
-        plt.pause(1)#暂停1s
+        plt.pause(0.1)#暂停1s
     '''关闭按钮动作'''
     def closeFigure(event):
         plt.close()#将窗口关闭
@@ -100,3 +101,10 @@ class draw():
 
 
         # plt.show()
+    def drawSecondFile(self):
+        c_x = np.arange(0, Data.ROOM_M, 0.001)
+        c_y = Data.FX_N + np.sqrt(Data.FX_S_R ** 2 - (c_x - Data.FX_M) ** 2)
+        c_y_2 = Data.FX_N - np.sqrt(Data.FX_S_R ** 2 - (c_x - Data.FX_M) ** 2)
+        # print(Data.FX_R)
+        plt.plot(c_x, c_y, c='y')
+        plt.plot(c_x, c_y_2, c='y')

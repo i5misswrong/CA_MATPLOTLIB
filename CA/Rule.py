@@ -37,4 +37,3 @@ def chickOverAround(p,allPeople):
         # p.logo=Data.BasicData.LOGO_NULL
         allPeople.remove(p)
 
-

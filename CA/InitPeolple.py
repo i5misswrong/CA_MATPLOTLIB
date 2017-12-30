@@ -20,7 +20,7 @@ class InitPeople():
         random.shuffle(allBlock)
         '''取前N个'''
         '''可有效防止无限产生随机数'''
-        allPeople=allBlock[:20]
+        allPeople=allBlock[:100]
         return allPeople
 
     '''产生指定行人'''
@@ -39,16 +39,16 @@ class InitPeople():
         # allPeople.append(b2)
 
         b3 = Block.Block(1)
-        b3.x = 28
+        b3.x = 6
         b3.y = 10
         b3.type = True
         allPeople.append(b3)
 
-        # b4 = Block.Block(1)
-        # b4.x = 6
-        # b4.y = 5
-        # b4.type = True
-        # allPeople.append(b4)
+        b4 = Block.Block(1)
+        b4.x = 2
+        b4.y = 10
+        b4.type = False
+        allPeople.append(b4)
 
         return allPeople
     '''产生墙壁'''
