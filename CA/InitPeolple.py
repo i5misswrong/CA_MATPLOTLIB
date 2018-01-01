@@ -20,7 +20,7 @@ class InitPeople():
         random.shuffle(allBlock)
         '''取前N个'''
         '''可有效防止无限产生随机数'''
-        allPeople=allBlock[:100]
+        allPeople=allBlock[:Data.PEOPLE_NUMBER]
         return allPeople
 
     '''产生指定行人'''

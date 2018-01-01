@@ -61,7 +61,7 @@ class draw():
         # pauseFig=plt.axes([0.2,0.025,0.1,0.04])
         # pauseFigbutton=Button(pauseFig,'pause',hovercolor='0.5')
         # pauseFigbutton.on_clicked(draw.pauseFigure)
-        plt.pause(0.1)#暂停1s
+        plt.pause(0.01)#暂停1s
     '''关闭按钮动作'''
     def closeFigure(event):
         plt.close()#将窗口关闭
