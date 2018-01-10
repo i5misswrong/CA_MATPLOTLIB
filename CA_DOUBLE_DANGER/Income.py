@@ -1,6 +1,6 @@
 import math
 import random
-
+import numpy as np
 import Data
 
 
@@ -146,11 +146,11 @@ def isNextNull(p,allPelple):
 def isUpAndDownOverAround(p,allPeople):
     '''墙壁收益'''
     p.wallIncome={1:0.0,2:0.0,3:0.0,4:0.0,5:0.0,6:0.0,7:0.0,8:0.0,9:0.0}
-    if p.y>Data.ROOM_N-1:
+    if p.y>Data.ROOM_N-2:
         p.wallIncome[1]=-1000
         p.wallIncome[2]=-1000
         p.wallIncome[3]=-1000
-    elif p.y<1:
+    elif p.y<2:
         p.wallIncome[7]=-1000
         p.wallIncome[8]=-1000
         p.wallIncome[9]=-1000
@@ -280,3 +280,10 @@ def outPattern(p):
     else:
         pattern=0# 方案0 默认方案 行人沿着默认方向移动
     return pattern
+
+def isPeoInFan(p,allPeople):
+    for peo in allPeople:
+
+        if np.sqrt((p.x-peo.x)**2+(p.y-peo.y)**2)<Data.PEOPLE_FAN_R:
+            if peo
+    pass

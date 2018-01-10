@@ -18,8 +18,12 @@ def run_view():
             Rule.chickOverAround(p, allPeople)#检测是否到达出口
             Rule.PeopleMove(p, direction)#行人移动
         DrawFirst.drawPeople(allPeople)
-
-
+        # while True:
+        #     if Data.figure_pause:
+        #         Data.pause_time=1000
+        #     else:
+        #         Data.pause_time=1
+        #     break
 
 
 def run_insert(case_s,P,R,steps):

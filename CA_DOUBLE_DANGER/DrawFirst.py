@@ -57,14 +57,27 @@ def drawPeople(P=[]):
     closeFig = plt.axes([0.8, 0.025, 0.1, 0.04])#关闭按钮
     closeFigbutton = Button(closeFig, 'close', hovercolor='0.5')#按钮样式
     closeFigbutton.on_clicked(closeFigure)#按钮按下去的动作
-    # pauseFig=plt.axes([0.2,0.025,0.1,0.04])
-    # pauseFigbutton=Button(pauseFig,'pause',hovercolor='0.5')
-    # pauseFigbutton.on_clicked(draw.pauseFigure)
-    plt.pause(0.01)#暂停1s
+    #-------------------------------------------------
+    pauseFig=plt.axes([0.2,0.025,0.1,0.04])
+    pauseFigbutton=Button(pauseFig,'pause',hovercolor='0.5')
+    pauseFigbutton.on_clicked(pauseFigure)
+    # ---------------------------------------------------
+    pauseResFig = plt.axes([0.6, 0.025, 0.1, 0.04])
+    pauseFigResbutton = Button(pauseResFig, 'res', hovercolor='0.5')
+    pauseFigResbutton.on_clicked(pauseResFigure)
+    # ---------------------------------------------------
+    while Data.figure_pause:
+        plt.pause(1)  # 暂停1s
+    plt.pause(0.5)#暂停1s
+
 '''关闭按钮动作'''
 def closeFigure(event):
     plt.close()#将窗口关闭
     Data.flag=False#循环标记为Fasle
+def pauseFigure(event):
+    Data.figure_pause=True
+def pauseResFigure(event):
+    Data.figure_pause=False
 '''绘制墙壁和出口'''
 def drawWallAndExit():
     '''墙壁为实线'''
