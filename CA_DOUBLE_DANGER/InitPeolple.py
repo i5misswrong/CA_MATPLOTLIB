@@ -38,16 +38,60 @@ def creatAppointPeo():
     # allPeople.append(b2)
 
     b3 = Block.Block(1)
-    b3.x = 6
+    b3.x = 10
     b3.y = 10
-    b3.type = True
+    b3.type = False
     allPeople.append(b3)
 
     b4 = Block.Block(1)
-    b4.x = 2
-    b4.y = 10
+    b4.x = 16
+    b4.y = 16
+    b4.isNewDefine=1
+    b4.force=30
     b4.type = False
     allPeople.append(b4)
+
+    b5 = Block.Block(1)
+    b5.x = 11
+    b5.y = 11
+    b5.isNewDefine = 0
+    b5.type = False
+    allPeople.append(b5)
+    #
+    # b6 = Block.Block(1)
+    # b6.x = 12
+    # b6.y = 12
+    # b6.isNewDefine = 1
+    # b6.type = False
+    # allPeople.append(b6)
+    #
+    # b7 = Block.Block(1)
+    # b7.x = 12
+    # b7.y = 12
+    # b7.isNewDefine = 1
+    # b7.type = False
+    # allPeople.append(b7)
+    #
+    # b8 = Block.Block(1)
+    # b8.x = 12
+    # b8.y = 12
+    # b8.isNewDefine = 1
+    # b8.type = False
+    # allPeople.append(b8)
+    #
+    # b9 = Block.Block(1)
+    # b9.x = 12
+    # b9.y = 12
+    # b9.isNewDefine = 1
+    # b9.type = False
+    # allPeople.append(b9)
+    #
+    # b11 = Block.Block(1)
+    # b11.x = 12
+    # b11.y = 12
+    # b11.isNewDefine = 1
+    # b11.type = False
+    # allPeople.append(b11)
 
     return allPeople
 '''产生墙壁'''

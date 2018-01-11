@@ -7,7 +7,8 @@ import Data
 
 def outDirection(p,allPeople):
 
-
+    active_par=isPeoInFan(p,allPeople)
+    activeFunction(active_par,p)
     countNewDefine(p)#计算新的默认方向收益
     isNextNull(p,allPeople)#计算下一点是否有行人
     countRandom(p)#count random direction income
@@ -280,10 +281,50 @@ def outPattern(p):
     else:
         pattern=0# 方案0 默认方案 行人沿着默认方向移动
     return pattern
-
+#判断行人是否位于扇形范围内
 def isPeoInFan(p,allPeople):
-    for peo in allPeople:
+    allDateReturn=[]
+    active_par_list=[]#返回列表 存放f/s^2
+    inFanPeo_num=0
+    sameDirection_num=0
+    active_par=0
+    if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2 >Data.FX_R**2 and (p.x-Data.FX_M)**2 +(p.y-Data.FX_N)<Data.FX_S_R**2:
+        pass
+    # if p.x==10 and p.y==10:#此处为测试
+    for peo in allPeople:#遍历行人
+        if p.x==peo.x and p.y==peo.y:#如果遍历到自己 --无视
+            pass
+        else:
+            inFanPeo_num=inFanPeo_num+1
+            if np.sqrt((p.x-peo.x)**2+(p.y-peo.y)**2)<Data.PEOPLE_FAN_R:#如果位于圆内
+                if peo.y-p.y<np.sqrt(3)*(peo.x-p.x) and peo.y-p.y>(-1)*np.sqrt(3)*(peo.x-p.x):#如果位于扇形内
+                    if peo.isNewDefine!=0:#如果是见过危险源的人--方向必定相反
+                        active_par=peo.force/((p.x-peo.x)**2+(p.y-peo.y)**2)#计算f/s^2
+                    else:
 
-        if np.sqrt((p.x-peo.x)**2+(p.y-peo.y)**2)<Data.PEOPLE_FAN_R:
-            if peo
-    pass
+                        sameDirection_num=sameDirection_num+1
+                # elif peo.y-p.y>np.sqrt(3)*(peo.x-p.x) and peo.y-p.y<(-1)*np.sqrt(3)*(peo.x-p.x):
+                #     print("left")
+                # else:
+                #     print("none")
+    active_par_list.append(active_par)#将f/s^2添加到返回列表
+    allDateReturn.append(active_par_list)
+    allDateReturn.append(sameDirection_num/inFanPeo_num)
+    return allDateReturn
+#激活函数计算
+def activeFunction(active_par_list,p):
+    # print(active_par_list)
+    if active_par_list:
+        active_par_list_len=len(active_par_list[0])#获取列表长度 以求平均值
+        if active_par_list_len==0:#如果扇形内没有人
+            fx_active=0.0#手动赋值
+        else:
+            par_x=sum(active_par_list[0])/active_par_list_len#计算平均值
+            fx_active=1/(1+1.5*np.exp(-(par_x)))#sigma激活函数
+        p.obParameter=fx_active-active_par_list[1]
+        print('px=',p.x,'py=',p.y,'finial',p.obParameter,'(1)=',fx_active,'(2)=',active_par_list[1])
+        print("-----------------------------------")
+
+def countObChangePara(p):
+    if p.obParameter>0:
+        p.isObChange=True

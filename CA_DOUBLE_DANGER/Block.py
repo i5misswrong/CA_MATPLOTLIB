@@ -3,7 +3,7 @@ class Block():
         self.logo=logo
         self.x=0
         self.y=0
-        self.type=False#行人类型  向左走 向右走
+        self.type=False#行人类型  向左走 向右走 true left   false right
         self.state=False#行人状态--暂定
         self.isInGrend=0 #行人是否位于gauss影响范围内
         self.isSeeGauss=False # pedestrian see guass feil
@@ -16,3 +16,7 @@ class Block():
         self.randomIncome= {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0}#随机方向收益
         self.wallIncome={1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0}#墙壁收益
         self.grendIncome={1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0}#梯度收益
+
+        self.force=1.0
+        self.obParameter=0
+        self.isObChange=False

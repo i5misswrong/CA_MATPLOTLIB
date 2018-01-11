@@ -23,7 +23,7 @@ import time
 def drawPeople(P=[]):
     plt.clf()#清除数据
     drawFile()#绘制高斯函数
-    # draw.drawSecondFile(self)
+    drawSecondFile()
     R_x=[]#向右移动的行人的x坐标
     R_y=[]#y坐标
     L_x=[]#向左移动的行人的x坐标
@@ -68,7 +68,7 @@ def drawPeople(P=[]):
     # ---------------------------------------------------
     while Data.figure_pause:
         plt.pause(1)  # 暂停1s
-    plt.pause(0.5)#暂停1s
+    plt.pause(100)#暂停1s
 
 '''关闭按钮动作'''
 def closeFigure(event):

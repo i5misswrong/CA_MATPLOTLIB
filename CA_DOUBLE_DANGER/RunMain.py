@@ -7,8 +7,8 @@ import pymysql
 
 
 def run_view():
-    allPeople = InitPeolple.creatPeople()  # 产生随机行人
-    # allPeople=init.creatAppointPeo()#产生指定行人
+    # allPeople = InitPeolple.creatPeople()  # 产生随机行人
+    allPeople=InitPeolple.creatAppointPeo()#产生指定行人
     # allWall = InitPeolple.creatWall()  # 创建墙壁
     # allExit = InitPeolple.creatExit()  # 创建出口
     while Data.flag:#循环开始
@@ -16,7 +16,7 @@ def run_view():
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
             Rule.chickOverAround(p, allPeople)#检测是否到达出口
-            Rule.PeopleMove(p, direction)#行人移动
+            # Rule.PeopleMove(p, direction)#行人移动
         DrawFirst.drawPeople(allPeople)
         # while True:
         #     if Data.figure_pause:
