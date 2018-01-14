@@ -28,27 +28,49 @@ def drawPeople(P=[]):
     R_y=[]#y坐标
     L_x=[]#向左移动的行人的x坐标
     L_y=[]#y坐标
+    G_x_r=[]
+    G_y_r=[]
+    G_x_l=[]
+    G_y_l=[]
     G_x=[]
     G_y=[]
+    de_x=[]
+    de_y=[]
     for p in P:#遍历行人列表
         if p.logo==Data.LOGO_PEOPLE:#此行可以省略？
-            if p.isInGrend:
-                G_x.append(p.x)
-                G_y.append(p.y)
+            if p.debug==1:
+                de_x.append(p.x)
+                de_y.append(p.y)
             else:
-                if p.type:#如果行人方向为 【右】
-                    R_x.append(p.x)#添加x坐标
-                    R_y.append(p.y)#添加y坐标
-                else:#如果行人方向为【左】
-                    L_x.append(p.x)
-                    L_y.append(p.y)
+
+                if p.isInGrend:
+                    if p.isNewDefine==1:
+                        G_x_r.append(p.x)
+                        G_y_r.append(p.y)
+                    elif p.isNewDefine==2:
+                        G_x_l.append(p.x)
+                        G_y_l.append(p.y)
+                    else:
+                        G_x.append(p.x)
+                        G_y.append(p.y)
+
+                else:
+                    if p.type:#如果行人方向为 【右】
+                        R_x.append(p.x)#添加x坐标
+                        R_y.append(p.y)#添加y坐标
+                    else:#如果行人方向为【左】
+                        L_x.append(p.x)
+                        L_y.append(p.y)
         # R_x.append(p[0])
         # R_y.append(p[1])
     # plt.figure(figsize=(10,6))
     plt.subplot(1,1,1)#绘图板布局  不知道怎么取消这一行
-    plt.scatter(G_x,G_y,c='k')
-    plt.scatter(R_x,R_y,c='r')#绘制行人--散点图
-    plt.scatter(L_x,L_y,c='b')
+    plt.scatter(G_x_r,G_y_r,c='k',marker='<')
+    plt.scatter(G_x_l,G_y_l,c='k',marker='>')
+    plt.scatter(G_x,G_y,c='k',marker='s')
+    plt.scatter(de_x,de_y,c='b',marker='D')
+    plt.scatter(R_x,R_y,c='r',marker='<')#绘制行人--散点图
+    plt.scatter(L_x,L_y,c='b',marker='>')
 
 
     drawWallAndExit()#绘制墙壁和出口
@@ -68,7 +90,7 @@ def drawPeople(P=[]):
     # ---------------------------------------------------
     while Data.figure_pause:
         plt.pause(1)  # 暂停1s
-    plt.pause(100)#暂停1s
+    plt.pause(1)#暂停1s
 
 '''关闭按钮动作'''
 def closeFigure(event):

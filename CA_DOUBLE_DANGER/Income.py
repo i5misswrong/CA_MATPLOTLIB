@@ -7,13 +7,17 @@ import Data
 
 def outDirection(p,allPeople):
 
-    active_par=isPeoInFan(p,allPeople)
-    activeFunction(active_par,p)
+
     countNewDefine(p)#计算新的默认方向收益
     isNextNull(p,allPeople)#计算下一点是否有行人
     countRandom(p)#count random direction income
     countGrend(p)#计算梯度收益
     isUpAndDownOverAround(p,allPeople)#计算上下边界收益 墙壁收益
+
+    active_par = isPeoInFan(p, allPeople)
+    activeFunction(active_par, p)
+    countObChangePara(p)
+
     addIncome(p)#将所有收益加起来
     sortDic(p)#对收益进行排序
     # print(p.grendIncome)
@@ -44,7 +48,10 @@ def addIncome(p):
         v6.append(i)
     # income = list(map(lambda  y, z, w, q: [ y + z + w + q],  v2, v3, v4, v5))#将v1 v2 ... 对应元素加起来
     if patter==0:#方案0 行人从未见过gauss 正常默认方向移动
-        income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
+        if p.isObChange:
+            income = list(map(lambda x, y, z, r: [x + y + z + r], v2, v3, v5, v6))
+        else:
+            income = list(map(lambda x, y, z, q: [x + y + z + q], v1, v2, v3, v5))
     elif patter==1:#方案1 行人见过gauss 并且位于gauss内 沿梯度下降算法移动
         income = list(map(lambda y, z, w, q: [y + z + w + q], v2, v3, v4, v5))
     else:# patter==2 方案3 行人见过gauss并且从gauss范围内移动出来了 沿新的默认方向移动
@@ -288,28 +295,42 @@ def isPeoInFan(p,allPeople):
     inFanPeo_num=0
     sameDirection_num=0
     active_par=0
-    if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2 >Data.FX_R**2 and (p.x-Data.FX_M)**2 +(p.y-Data.FX_N)<Data.FX_S_R**2:
-        pass
-    # if p.x==10 and p.y==10:#此处为测试
-    for peo in allPeople:#遍历行人
-        if p.x==peo.x and p.y==peo.y:#如果遍历到自己 --无视
-            pass
-        else:
-            inFanPeo_num=inFanPeo_num+1
-            if np.sqrt((p.x-peo.x)**2+(p.y-peo.y)**2)<Data.PEOPLE_FAN_R:#如果位于圆内
-                if peo.y-p.y<np.sqrt(3)*(peo.x-p.x) and peo.y-p.y>(-1)*np.sqrt(3)*(peo.x-p.x):#如果位于扇形内
-                    if peo.isNewDefine!=0:#如果是见过危险源的人--方向必定相反
-                        active_par=peo.force/((p.x-peo.x)**2+(p.y-peo.y)**2)#计算f/s^2
-                    else:
+    if p.isInGrend==0:
+        #行人位于两个圈之间
+        if (p.x-Data.FX_M)**2+(p.y-Data.FX_N)**2 >Data.FX_R**2 and (p.x-Data.FX_M)**2 +(p.y-Data.FX_N)<Data.FX_S_R**2:
+        # if p.x==10 and p.y==10:#此处为测试
+            for peo in allPeople:#遍历行人
+                if p.x==peo.x and p.y==peo.y:#如果遍历到自己 --无视
+                    pass
+                else:
 
-                        sameDirection_num=sameDirection_num+1
-                # elif peo.y-p.y>np.sqrt(3)*(peo.x-p.x) and peo.y-p.y<(-1)*np.sqrt(3)*(peo.x-p.x):
-                #     print("left")
-                # else:
-                #     print("none")
-    active_par_list.append(active_par)#将f/s^2添加到返回列表
-    allDateReturn.append(active_par_list)
-    allDateReturn.append(sameDirection_num/inFanPeo_num)
+                    if np.sqrt((p.x-peo.x)**2+(p.y-peo.y)**2)<Data.PEOPLE_FAN_R:#如果位于圆内
+                        if p.x<peo.x:
+                            if peo.y - p.y < np.sqrt(3) * (peo.x - p.x) and peo.y - p.y > (-1) * np.sqrt(3) * (peo.x - p.x):  # 如果位于扇形内--右扇形
+                                if peo.isInGrend != 0:  # 如果是见过危险源的人--方向必定相反
+                                    active_par = peo.force / ((p.x - peo.x) ** 2 + (p.y - peo.y) ** 2)  # 计算f/s^2
+                                else:
+                                    sameDirection_num = sameDirection_num + 1
+                                inFanPeo_num = inFanPeo_num + 1
+                        else:
+                            if peo.y - p.y > np.sqrt(3) * (peo.x - p.x) and peo.y - p.y < (-1) * np.sqrt(3) * (peo.x - p.x):  # 如果位于扇形内--右扇形
+                                if peo.isInGrend != 0:  # 如果是见过危险源的人--方向必定相反
+                                    active_par = peo.force / ((p.x - peo.x) ** 2 + (p.y - peo.y) ** 2)  # 计算f/s^2
+                                else:
+                                    sameDirection_num = sameDirection_num + 1
+                                inFanPeo_num = inFanPeo_num + 1
+                        # elif peo.y-p.y>np.sqrt(3)*(peo.x-p.x) and peo.y-p.y<(-1)*np.sqrt(3)*(peo.x-p.x):
+                        #     print("left")
+                        # else:
+                        #     print("none")
+            active_par_list.append(active_par)#将f/s^2添加到返回列表
+            allDateReturn.append(active_par_list)
+            if inFanPeo_num==0:
+                allDateReturn.append(0)
+            else:
+                allDateReturn.append(sameDirection_num/inFanPeo_num)
+            # if p.x==10 and p.y==10:
+            # print(sameDirection_num,'---',inFanPeo_num)
     return allDateReturn
 #激活函数计算
 def activeFunction(active_par_list,p):
@@ -320,11 +341,18 @@ def activeFunction(active_par_list,p):
             fx_active=0.0#手动赋值
         else:
             par_x=sum(active_par_list[0])/active_par_list_len#计算平均值
-            fx_active=1/(1+1.5*np.exp(-(par_x)))#sigma激活函数
+            fx_active=1/(1+4*np.exp(-(par_x)))#sigma激活函数
+            if fx_active<=0.2:
+                fx_active=0.0
         p.obParameter=fx_active-active_par_list[1]
-        print('px=',p.x,'py=',p.y,'finial',p.obParameter,'(1)=',fx_active,'(2)=',active_par_list[1])
-        print("-----------------------------------")
+        # if p.x==10 and p.y==10:
+        # if p.debug==1:
+        # if p.isInGrend==0:
+        #     print('px=',p.x,'py=',p.y,'finial',p.obParameter,'(1)=',fx_active,'(2)=',active_par_list[1])
+        # print("-----------------------------------")
 
 def countObChangePara(p):
-    if p.obParameter>0:
+    if p.obParameter>0.01:
         p.isObChange=True
+        p.isInGrend=2
+        countIsNewDefine(p)

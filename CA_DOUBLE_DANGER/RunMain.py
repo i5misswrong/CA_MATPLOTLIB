@@ -7,17 +7,23 @@ import pymysql
 
 
 def run_view():
-    # allPeople = InitPeolple.creatPeople()  # 产生随机行人
-    allPeople=InitPeolple.creatAppointPeo()#产生指定行人
+    time_logo=0
+    allPeople = InitPeolple.creatPeople()  # 产生随机行人
+    # allPeople=InitPeolple.creatAppointPeo()#产生指定行人
+    # allPeople=InitPeolple.creatAreaPeople()
+    # print(len(allPeople))
     # allWall = InitPeolple.creatWall()  # 创建墙壁
     # allExit = InitPeolple.creatExit()  # 创建出口
+    DrawFirst.drawPeople(allPeople)
     while Data.flag:#循环开始
         for p in allPeople:#遍历行人
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
             Rule.chickOverAround(p, allPeople)#检测是否到达出口
-            # Rule.PeopleMove(p, direction)#行人移动
+            Rule.PeopleMove(p, direction)#行人移动
         DrawFirst.drawPeople(allPeople)
+        time_logo = time_logo + 1
+        print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
         # while True:
         #     if Data.figure_pause:
         #         Data.pause_time=1000
@@ -25,7 +31,81 @@ def run_view():
         #         Data.pause_time=1
         #     break
 
+        # if time_logo==10:
+        #     Data.flag=False
+def run_force_test(double_r,steps):
+    time_logo=0
+    Data.PEOPLE_FORCE=50
+    Data.FX_S_SIGMA_2=double_r
+    Data.FX_S_R = 2 * np.sqrt(Data.FX_S_SIGMA_2)
+    Data.FX_S_P = 2 * Data.FX_S_SIGMA_2
+    allPeople = InitPeolple.creatPeople()  # 产生随机行人
+    # allPeople=InitPeolple.creatAppointPeo()#产生指定行人
+    # allPeople=InitPeolple.creatAreaPeople()
+    # print(len(allPeople))
+    # allWall = InitPeolple.creatWall()  # 创建墙壁
+    # allExit = InitPeolple.creatExit()  # 创建出口
+    # DrawFirst.drawPeople(allPeople)
+    while Data.flag:#循环开始
+        for p in allPeople:#遍历行人
+            Income.outDirection(p, allPeople)#计算收益
+            direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
+            Rule.chickOverAround(p, allPeople)#检测是否到达出口
+            Rule.PeopleMove(p, direction)#行人移动
+        # DrawFirst.drawPeople(allPeople)
+        time_logo = time_logo + 1
+        # print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
+        if len(allPeople)==0:
+            Data.flag=False
+    allData=[]
+    allData.append(double_r)
+    allData.append(steps)
+    allData.append(time_logo)
+    return allData
+def insertDB_force_test():
+    connect = pymysql.connect(host='localhost', user='root', password='334455', db='Pedestrian')  # 获取链接
 
+    '''设置循环参数'''
+    list_case = [0, 1, 2, 3, 4]
+    list_density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    list_radius = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+    list_steps = [0, 1,2,3,4]
+    list_force=[1,10,20,30,40,50,60,70,80,90,100,110,120,130]
+    list_double_r=[20,30,40,50,60,70,80,90,100]
+    # list_force=[1,10]
+    try:
+        with connect.cursor() as cursor:  # 打开游标
+            for l_f in list_double_r:
+                for l_s in list_steps:
+                    allData = []  # 接受参数
+                    allData = run_force_test(l_f,l_s)  # 运行主函数
+
+                    '''接受各种参数'''
+                    force=allData[0]
+                    steps=allData[1]
+                    T=allData[2]
+                    # case_s = allData[0]
+                    # density = allData[1]
+                    # radius = allData[2]
+                    # steps = allData[3]
+                    # time_s = allData[4]
+                    # surplus = allData[5]
+                    # veocity = allData[6]
+                    # quantity = allData[7]
+
+                    # print('当前case=', case_s, '---', '密度=', density, '---', '半径=', radius, '执行到第', steps, '步')
+                    print("force=",force,'---',"steps=",steps,'---',"time_s=",T)
+                    Data.flag = True  # 设置循环标识符
+                    '''设置sql语句'''
+                    # sql = 'insert into pedestrian.danger_one (case_s, P, R, steps, time_s, surplus, V, Q) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)'
+                    sql="insert into pedestrian.force_time (forces,steps,T) values (%s,%s,%s)"
+                    cursor.execute(sql,[force,steps,T])
+                    # for i in range(len(T)):  # 循环将其写入数据库
+                        # cursor.execute(sql, [case_s, density, radius, steps, time_s[i], surplus[i], veocity[i],
+                        #                      quantity[i]])
+                    connect.commit()  # 数据库执行
+    finally:  # 如果发生异常，关闭数据库
+        connect.close()
 def run_insert(case_s,P,R,steps):
     resultData=[]#返回总列表
     if case_s==0:#危险源位置设置
@@ -147,8 +227,8 @@ def insertDB():
         connect.close()
 if __name__=='__main__':
     # insertDB()
-    run_view()
-
+    # run_view()
+    insertDB_force_test()
     #
     # # allData=run_f()
     # print(allData)

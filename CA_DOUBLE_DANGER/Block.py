@@ -17,6 +17,8 @@ class Block():
         self.wallIncome={1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0}#墙壁收益
         self.grendIncome={1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0}#梯度收益
 
-        self.force=1.0
-        self.obParameter=0
-        self.isObChange=False
+        self.force=0#行人影响力
+        self.obParameter=0#f(F/s^2)
+        self.isObChange=False#f(F/s^2)-m'/m if>0.2 设为Ture
+
+        self.debug=0#debug标记行人
