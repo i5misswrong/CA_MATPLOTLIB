@@ -24,23 +24,21 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="4cb8ffd6-031a-416b-a6e4-870ac31e3427">
+      <connection connection-id="0c61dc5b-0736-4eb5-954c-ead97a08f218">
         <schema name="pedestrian" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="4cb8ffd6-031a-416b-a6e4-870ac31e3427">
+    <connection id="0c61dc5b-0736-4eb5-954c-ead97a08f218">
       <console name="Connection" type="STANDARD" />
     </connection>
   </component>
+  <component name="DBNavigator.Project.DatabaseSessionManager">
+    <connection id="0c61dc5b-0736-4eb5-954c-ead97a08f218" />
+  </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-list connection-id="4cb8ffd6-031a-416b-a6e4-870ac31e3427" dataset="pedestrian.force_time" active-filter-id="EMPTY_FILTER">
-      <filter id="ea258809-5f58-4962-aa7a-0b8a151756d8" name="1000" temporary="false" custom-name="false" type="basic" join-type="AND">
-        <condition column="idforce_time" operator="&lt;" value="1000" active="true" />
-      </filter>
-    </filter-list>
-    <filter-list connection-id="4cb8ffd6-031a-416b-a6e4-870ac31e3427" dataset="pedestrian.force_times_test" active-filter-id="" />
+    <filter-list connection-id="0c61dc5b-0736-4eb5-954c-ead97a08f218" dataset="pedestrian.danger_double" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -65,7 +63,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="4cb8ffd6-031a-416b-a6e4-870ac31e3427" active="true">
+      <connection id="0c61dc5b-0736-4eb5-954c-ead97a08f218" active="true">
         <database>
           <name value="Connection" />
           <description value="" />
@@ -99,6 +97,7 @@
         </ssh-settings>
         <details>
           <charset value="UTF-8" />
+          <session-management value="true" />
           <ddl-file-binding value="true" />
           <database-logging value="false" />
           <connect-automatically value="true" />
@@ -452,7 +451,6 @@
         <debug-execution-timeout value="600" />
         <focus-result value="false" />
         <prompt-execution value="false" />
-        <target-connection value="ASK" />
       </statement-execution>
       <script-execution>
         <command-line-interfaces />

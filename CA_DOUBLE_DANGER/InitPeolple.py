@@ -1,9 +1,46 @@
 import random
+from scipy.stats import norm
+import numpy as np
 import Data,Block
+import matplotlib.pyplot as plt
 '''初始化随机行人'''
 def creatPeople():
+    allBlock = []  # 用于存放格子
+    allPeople = []  # 用于存放行人
+
+    normal_x = np.arange(0, 1, 1 / Data.PEOPLE_NUMBER)
+    normal_y = norm()
+    normal_y_result = Data.PEOPLE_FORCE * (normal_y.pdf(normal_x))
+    random.shuffle(normal_y_result)
+
+    '''将所有格子全部存入列表'''
+    for i in range(1, Data.ROOM_M):
+        for j in range(1, Data.ROOM_N):
+            b = Block.Block(1)
+            b.x = i
+            b.y = j
+            b.force = Data.PEOPLE_FORCE
+            if j > Data.ROOM_N / 2:
+                b.type = False
+            else:
+                b.type = True
+            allBlock.append(b)
+    '''随机排序'''
+    random.shuffle(allBlock)
+    for i in range(len(allPeople)):
+        allPeople[i].force = normal_y_result[i]
+
+    '''取前N个'''
+    '''可有效防止无限产生随机数'''
+    allPeople = allBlock[:Data.PEOPLE_NUMBER]
+    return allPeople
+def creatPeople_force_normal():
     allBlock=[]#用于存放格子
     allPeople=[]#用于存放行人
+
+
+
+
     '''将所有格子全部存入列表'''
     for i in range(1,Data.ROOM_M):
         for j in range(1,Data.ROOM_N):
@@ -18,9 +55,90 @@ def creatPeople():
             allBlock.append(b)
     '''随机排序'''
     random.shuffle(allBlock)
+
     '''取前N个'''
     '''可有效防止无限产生随机数'''
-    allPeople=allBlock[:Data.PEOPLE_NUMBER]
+    # allPeople=allBlock[:Data.PEOPLE_NUMBER]
+    '''-----------------------'''
+    force_average=100
+    force_sigma=5
+    force_list_all = []
+    people_elem_number = Data.PEOPLE_NUMBER / 0.95
+    people_elem_list_x = np.arange(-30, 130, 1)
+    people_elem_list_y = norm(force_average,force_sigma)
+    people_elem_list_y_norm = people_elem_list_y.pdf(people_elem_list_x)
+    plt.plot(people_elem_list_x,people_elem_list_y_norm)
+    for p_y_n in people_elem_list_y_norm:
+        s = int(p_y_n * people_elem_number)
+        force_list_all.append(s)
+    allPeople = allBlock[:sum(force_list_all)]
+    # print('真实影响力数量',sum(force_list_all),'行人总数',len(allPeople))
+    # print(len(force_list_all))
+    sign=0
+    print(force_list_all)
+    for i in force_list_all:
+        for j in range(i):
+            allPeople[sign].force=sign
+            sign=sign+1
+    # rt=[]
+    # for p in allPeople:
+    #     rt.append(p.force)
+    # rt_x=np.arange(sum(force_list_all))
+    # plt.plot(rt_x,rt)
+    # plt.show()
+    # print("123")
+    return allPeople
+
+def creatPeople_force_fix():
+    allBlock = []  # 用于存放格子
+    allPeople = []  # 用于存放行人
+    '''将所有格子全部存入列表'''
+    for i in range(1, Data.ROOM_M):
+        for j in range(1, Data.ROOM_N):
+            b = Block.Block(1)
+            b.x = i
+            b.y = j
+            b.force = Data.PEOPLE_FORCE
+            if j > Data.ROOM_N / 2:
+                b.type = False
+            else:
+                b.type = True
+            allBlock.append(b)
+    '''随机排序'''
+    random.shuffle(allBlock)
+    '''取前N个'''
+    '''可有效防止无限产生随机数'''
+    allPeople = allBlock[:Data.PEOPLE_NUMBER]
+    for i in range(len(allPeople)):
+        allPeople[i].force = Data.PEOPLE_FORCE
+    return allPeople
+def creatPeople_force_random():
+    allBlock = []  # 用于存放格子
+    allPeople = []  # 用于存放行人
+    '''将所有格子全部存入列表'''
+    for i in range(1, Data.ROOM_M):
+        for j in range(1, Data.ROOM_N):
+            b = Block.Block(1)
+            b.x = i
+            b.y = j
+            b.force = Data.PEOPLE_FORCE
+            if j > Data.ROOM_N / 2:
+                b.type = False
+            else:
+                b.type = True
+            allBlock.append(b)
+    '''随机排序'''
+    random.shuffle(allBlock)
+    '''取前N个'''
+    '''可有效防止无限产生随机数'''
+    allPeople = allBlock[:Data.PEOPLE_NUMBER]
+    for i in range(len(allPeople)):
+        ran_force=0
+        if Data.PEOPLE_FORCE==0:
+            ran_force=0
+        else:
+            ran_force=random.randint(Data.PEOPLE_FORCE-10,Data.PEOPLE_FORCE+10)
+        allPeople[i].force = ran_force
     return allPeople
 def creatAreaPeople():
     allBlock=[]#用于存放格子
@@ -142,4 +260,30 @@ def creatExit():
     return allExit
 
 
+# real_force_num=sum(force_list_all)
+#     real_peo_number=len(allPeople)
+#     if real_force_num>real_peo_number:
+#         people_elem_other_number=real_force_num-real_peo_number
+#         for i in range(int(people_elem_other_number/2)):
+#             force_list_all.pop(0)
+#             force_list_all.pop()
+#         if real_peo_number>real_peo_number:
+#             force_list_all.pop()
+#     else:
+#         sub=real_peo_number-real_force_num
+#         for i in range(sub):
+#             force_list_all.append(0)
+#     print('真实影响力数量', sum(force_list_all), '行人总数', len(allPeople))
+#     if sum(force_list_all)!=len(allPeople):
+#         print("have error")
+#     # print(Data.PEOPLE_NUMBER)
+#     # print(len(force_list_all),len(allPeople))
+#     for i in range(len(allPeople)):
+#         allPeople[i].force=force_list_all[i]
+#     # for p in allPeople:
+#     #     print(p.force)
 
+# normal_x=np.arange(0,1,1/Data.PEOPLE_NUMBER)
+#     normal_y=norm()
+#     normal_y_result=Data.PEOPLE_FORCE*(normal_y.pdf(normal_x))
+    # random.shuffle(normal_y_result)
