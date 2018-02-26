@@ -7,8 +7,8 @@ import pymysql
 
 
 def run_view():
+    '''此方法为单步运行测试方法，带图像显示'''
     time_logo=0
-
     # allPeople = InitPeolple.creatPeople()  # 产生随机行人
     # allPeople=InitPeolple.creatPeople_force_normal()
     # allPeople=InitPeolple.creatPeople_force_fix()
@@ -38,6 +38,7 @@ def run_view():
         # if time_logo==10:
         #     Data.flag=False
 def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_view,steps):
+    '''此方法为运行方法，带参数接受和返回，不带图像显示'''
     Data.flag=True
     time_logo=0
 
@@ -87,37 +88,8 @@ def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_vie
     # print("\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
 
     return time_logo
-
-def run_force_test(double_r,steps):
-    time_logo=0
-    Data.PEOPLE_FORCE=50
-    Data.FX_S_SIGMA_2=double_r
-    Data.FX_S_R = 2 * np.sqrt(Data.FX_S_SIGMA_2)
-    Data.FX_S_P = 2 * Data.FX_S_SIGMA_2
-    allPeople = InitPeolple.creatPeople()  # 产生随机行人
-    # allPeople=InitPeolple.creatAppointPeo()#产生指定行人
-    # allPeople=InitPeolple.creatAreaPeople()
-    # print(len(allPeople))
-    # allWall = InitPeolple.creatWall()  # 创建墙壁
-    # allExit = InitPeolple.creatExit()  # 创建出口
-    # DrawFirst.drawPeople(allPeople)
-    while Data.flag:#循环开始
-        for p in allPeople:#遍历行人
-            Income.outDirection(p, allPeople)#计算收益
-            direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
-            Rule.chickOverAround(p, allPeople)#检测是否到达出口
-            Rule.PeopleMove(p, direction)#行人移动
-        # DrawFirst.drawPeople(allPeople)
-        time_logo = time_logo + 1
-        # print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
-        if len(allPeople)==0:
-            Data.flag=False
-    allData=[]
-    allData.append(double_r)
-    allData.append(steps)
-    allData.append(time_logo)
-    return allData
 def insertDB_force_test():
+    '''此方法为插入数据库方法，提供各种参数，循环运行run_insert并接受参数，将其录入数据库'''
     connect = pymysql.connect(host='localhost', user='root', password='334455', db='pedestrian')  # 获取链接
 
     '''设置循环参数'''
@@ -149,6 +121,43 @@ def insertDB_force_test():
                                                 print("case:",l_c,"-density:",l_d,"-核心半径:",l_r_c,"-边缘半径:",l_r_o,"-增长速度:",l_r_v_i,"-影响力:",l_f,"-影响力类型:",l_f_t,"-视野半径:",l_p_v,"-步数:",l_s,"----当前时间:",time_logo)
     finally:  # 如果发生异常，关闭数据库
         connect.close()
+
+
+if __name__=='__main__':
+    # insertDB()
+    # run_view()
+    insertDB_force_test()
+
+'''以下方法为测试用'''
+def run_force_test(double_r,steps):
+    time_logo=0
+    Data.PEOPLE_FORCE=50
+    Data.FX_S_SIGMA_2=double_r
+    Data.FX_S_R = 2 * np.sqrt(Data.FX_S_SIGMA_2)
+    Data.FX_S_P = 2 * Data.FX_S_SIGMA_2
+    allPeople = InitPeolple.creatPeople()  # 产生随机行人
+    # allPeople=InitPeolple.creatAppointPeo()#产生指定行人
+    # allPeople=InitPeolple.creatAreaPeople()
+    # print(len(allPeople))
+    # allWall = InitPeolple.creatWall()  # 创建墙壁
+    # allExit = InitPeolple.creatExit()  # 创建出口
+    # DrawFirst.drawPeople(allPeople)
+    while Data.flag:#循环开始
+        for p in allPeople:#遍历行人
+            Income.outDirection(p, allPeople)#计算收益
+            direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
+            Rule.chickOverAround(p, allPeople)#检测是否到达出口
+            Rule.PeopleMove(p, direction)#行人移动
+        # DrawFirst.drawPeople(allPeople)
+        time_logo = time_logo + 1
+        # print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
+        if len(allPeople)==0:
+            Data.flag=False
+    allData=[]
+    allData.append(double_r)
+    allData.append(steps)
+    allData.append(time_logo)
+    return allData
 def run_insert_old(case_s,P,R,steps):
     resultData=[]#返回总列表
     if case_s==0:#危险源位置设置
@@ -268,17 +277,6 @@ def insertDB():
                             connect.commit()  # 数据库执行
     finally:  # 如果发生异常，关闭数据库
         connect.close()
-if __name__=='__main__':
-    # insertDB()
-    # run_view()
-    insertDB_force_test()
-    #
-    # # allData=run_f()
-    # print(allData)
-    #
-    #
-    # print(len(time_s))
-
 # for l_f in list_double_r:
 #     for l_s in list_steps:
 #         allData = []  # 接受参数
