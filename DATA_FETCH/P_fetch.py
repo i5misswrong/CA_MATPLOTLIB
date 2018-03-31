@@ -19,10 +19,10 @@ def force_data():
     try:
         with connect.cursor() as cursor:
             for l_c in list_case:
-                for s in list_force:
+                for s in list_radius_ob:
                     time_list = []
                     average = 0
-                    sql = "select time_logo from pedestrian.danger_double where radius_v=0 and density=0.9 and peo_view=10 and case_s='%s' and  radius=27 and radius_ob=100 and  force_s= '%s' and force_type=1 "
+                    sql = "select time_logo from pedestrian.danger_double where radius_v=0 and density=0.9 and peo_view=10 and case_s='%s' and  radius=27 and radius_ob='%s' and  force_s=100 and force_type=1 "
                     cursor.execute(sql, [l_c,s])
                     result = cursor.fetchall()
                     for i in result:

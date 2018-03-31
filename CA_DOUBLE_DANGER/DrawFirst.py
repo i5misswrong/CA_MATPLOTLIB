@@ -90,7 +90,7 @@ def drawPeople(P=[]):
     # ---------------------------------------------------
     while Data.figure_pause:
         plt.pause(1)  # 暂停1s
-    plt.pause(0.1)#暂停1s
+    plt.pause(1)#暂停1s
 
 '''关闭按钮动作'''
 def closeFigure(event):

@@ -20,6 +20,8 @@ def run_view():
     # allExit = InitPeolple.creatExit()  # 创建出口
     DrawFirst.drawPeople(allPeople)
     while Data.flag:#循环开始
+        if Data.FX_S_R<21:
+            count_R_O_V(time_logo)
         for p in allPeople:#遍历行人
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
@@ -28,15 +30,10 @@ def run_view():
         DrawFirst.drawPeople(allPeople)
         time_logo = time_logo + 1
         print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
-        # while True:
-        #     if Data.figure_pause:
-        #         Data.pause_time=1000
-        #     else:
-        #         Data.pause_time=1
-        #     break
-
-        # if time_logo==10:
-        #     Data.flag=False
+def count_R_O_V(time_logo):
+    v=Data.FX_S_V
+    r_0=Data.count_FX_S_R(Data.FX_S_SIGMA_2)
+    Data.FX_S_R=r_0+v*time_logo
 def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_view,steps):
     '''此方法为运行方法，带参数接受和返回，不带图像显示'''
     Data.flag=True
@@ -74,8 +71,9 @@ def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_vie
         allPeople=InitPeolple.creatPeople_force_random()
 
     Data.PEOPLE_FAN_R=peo_view
-
     while Data.flag:#循环开始
+        if Data.FX_S_R<21:
+            count_R_O_V(time_logo)
         for p in allPeople:#遍历行人
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
@@ -94,12 +92,13 @@ def insertDB_force_test():
 
     '''设置循环参数'''
     list_case = [0,1,2]#危险源位置
-    list_density = [0.8,0.9]#行人密度
+    list_density = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.9]#行人密度
     list_radius_core = [9,18,27]#危险源半径
-    list_radius_ob=[30,40,50,60,70,80,90,100]#危险源边缘半径
-    list_radius_v_increase=[0]#危险源边缘增长速度
-    list_force=[0,10,20,30,40,50,60,70,80,90,100]#行人影响力
-    list_force_tyoe=[1,2]#行人影响力类型
+    list_radius_ob=[70,80,90,100]#危险源边缘半径
+    # list_radius_v_increase = [0, 0.5]  # 危险源边缘增长速度
+    list_radius_v_increase=[1]#危险源边缘增长速度
+    list_force=[50]#行人影响力
+    list_force_tyoe=[1]#行人影响力类型
     list_people_view=[10]#行人视野半径
     list_steps = [0,1,2,3,4]
     '''参数设置结束'''
@@ -108,17 +107,16 @@ def insertDB_force_test():
             for l_c in list_case:
                 for l_d in list_density:
                     for l_r_c in list_radius_core:
-                        for l_r_o in list_radius_ob:
-                            for l_r_v_i in list_radius_v_increase:
-                                for l_f in list_force:
-                                    for l_f_t in list_force_tyoe:
-                                        for l_p_v in list_people_view:
-                                            for l_s in list_steps:
-                                                time_logo=run_insert(l_c,l_d,l_r_c,l_r_o,l_r_v_i,l_f,l_f_t,l_p_v,l_s)
-                                                sql='insert into pedestrian.danger_double (case_s,density,radius,radius_ob,radius_v,force_s,force_type,peo_view,steps,time_logo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-                                                cursor.execute(sql,[l_c,l_d,l_r_c,l_r_o,l_r_v_i,l_f,l_f_t,l_p_v,l_s,time_logo])
-                                                connect.commit()
-                                                print("case:",l_c,"-density:",l_d,"-核心半径:",l_r_c,"-边缘半径:",l_r_o,"-增长速度:",l_r_v_i,"-影响力:",l_f,"-影响力类型:",l_f_t,"-视野半径:",l_p_v,"-步数:",l_s,"----当前时间:",time_logo)
+                        for l_r_v_i in list_radius_v_increase:
+                            for l_f in list_force:
+                                for l_f_t in list_force_tyoe:
+                                    for l_p_v in list_people_view:
+                                        for l_s in list_steps:
+                                            time_logo=run_insert(l_c,l_d,l_r_c,l_r_c,l_r_v_i,l_f,l_f_t,l_p_v,l_s)
+                                            sql='insert into pedestrian.danger_double_r_view (density,case_s,force_s,r_c,r_o,r_o_v,r_view,steps,time_logo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+                                            cursor.execute(sql,[l_d,l_c,l_f,l_r_c,l_r_c,l_r_v_i,l_p_v,l_s,time_logo])
+                                            connect.commit()
+                                            print("case:",l_c,"-density:",l_d,"-核心半径:",l_r_c,"-边缘半径:",l_r_c,"-增长速度:",l_r_v_i,"-影响力:",l_f,"-影响力类型:",l_f_t,"-视野半径:",l_p_v,"-步数:",l_s,"----当前时间:",time_logo)
     finally:  # 如果发生异常，关闭数据库
         connect.close()
 
