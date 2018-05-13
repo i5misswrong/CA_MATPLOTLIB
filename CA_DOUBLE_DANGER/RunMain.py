@@ -4,76 +4,94 @@ import matplotlib.animation
 import numpy as np
 import time
 import pymysql
+import math
 
 
 def run_view():
     '''此方法为单步运行测试方法，带图像显示'''
     time_logo=0
+
+    Data.FX_R = 8
+    Data.FX_P = math.pow(Data.FX_R, 2) / 2
+
+    Data.FX_S_V = 0
+    Data.FX_S_R = 15
+
+
     # allPeople = InitPeolple.creatPeople()  # 产生随机行人
     # allPeople=InitPeolple.creatPeople_force_normal()
-    # allPeople=InitPeolple.creatPeople_force_fix()
-    allPeople=InitPeolple.creatPeople_force_random()
+    allPeople=InitPeolple.creatPeople_force_fix()
+    # allPeople=InitPeolple.creatPeople_force_random()
     # allPeople=InitPeolple.creatAppointPeo()#产生指定行人
     # allPeople=InitPeolple.creatAreaPeople()
     # print(len(allPeople))
     # allWall = InitPeolple.creatWall()  # 创建墙壁
     # allExit = InitPeolple.creatExit()  # 创建出口
     DrawFirst.drawPeople(allPeople)
+    # time.sleep(100)
+    result_time=[]
+    result_rote=[]
+    result_all=[]
     while Data.flag:#循环开始
         if Data.FX_S_R<21:
-            count_R_O_V(time_logo)
+            count_R_O_V()
         for p in allPeople:#遍历行人
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
             Rule.chickOverAround(p, allPeople)#检测是否到达出口
             Rule.PeopleMove(p, direction)#行人移动
+
+
+        a_p=0
+        b_p = 0
+        for p in allPeople:
+            if Data.FX_R**2<((p.x-Data.FX_M)**2 +(p.x-Data.FX_M)**2)<Data.FX_S_R**2:
+                a_p=a_p+1
+                if p.isInGrend==2:
+                    b_p=b_p+1
+        result_time.append(time_logo)
+        if a_p==0:
+            result_rote.append(0)
+        else:
+            result_rote.append(b_p/a_p)
         DrawFirst.drawPeople(allPeople)
         time_logo = time_logo + 1
-        print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
-def count_R_O_V(time_logo):
-    v=Data.FX_S_V
-    r_0=Data.count_FX_S_R(Data.FX_S_SIGMA_2)
-    Data.FX_S_R=r_0+v*time_logo
-def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_view,steps):
+        # print(time_logo,"\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
+        # if time_logo==15:
+        #     Data.flag=False
+        print(time_logo)
+    result_all.append(result_time)
+    result_all.append(result_rote)
+    print(result_all)
+def count_R_O_V():
+    Data.FX_S_R=Data.FX_S_R+Data.FX_S_V
+def run_insert(par_density,par_case,par_r_c,par_r_o,par_v,par_force):
     '''此方法为运行方法，带参数接受和返回，不带图像显示'''
     Data.flag=True
     time_logo=0
-
-    if case_s==0:#危险源位置设置
+    if par_case==1:#危险源位置设置
         Data.FX_N=19
-    elif case_s==1:
+    elif par_case==2:
         Data.FX_N = 15
-    elif case_s==2:
+    elif par_case==3:
         Data.FX_N = 10
-    elif case_s==3:
-        Data.FX_N = 5
-    elif case_s==4:
-        Data.FX_N = 2
+    Data.PEOPLE_DENSYTY=par_density
+    Data.PEOPLE_NUMBER=int(Data.ROOM_N * Data.ROOM_M * par_density)
+    Data.FX_R =par_r_c   # 影响范围半径
+    Data.FX_P = math.pow(par_r_c, 2) / 2 # 系数 p越大 高斯函数的圆形越大
+    Data.FX_S_R=par_r_o
+    Data.FX_S_P=math.pow(par_r_o, 2) / 2
+    Data.FX_S_V=par_v
+    Data.PEOPLE_FORCE=par_force
+    allPeople = InitPeolple.creatPeople_force_fix()
 
-    Data.PEOPLE_DENSYTY=density
-    Data.PEOPLE_NUMBER=Data.count_PEOPLE_NUMBER(density)
+    result_time = []
+    result_rote = []
+    result_all = []
 
-    Data.FX_SIGMA_2 = radius  # 危险源大小
-    Data.FX_R = Data.count_FX_R(radius)  # 影响范围半径
-    Data.FX_P = Data.count_FX_P(radius)  # 系数 p越大 高斯函数的圆形越大
-
-    Data.FX_S_SIGMA_2=radius_ob
-    Data.FX_S_R=Data.count_FX_S_R(radius_ob)
-    Data.FX_S_P=Data.count_FX_S_P(radius_ob)
-
-    Data.FX_S_V=radius_v
-
-    Data.PEOPLE_FORCE=force
-
-    if force_type==0:# fix
-        allPeople = InitPeolple.creatPeople_force_fix()
-    else: #random
-        allPeople=InitPeolple.creatPeople_force_random()
-
-    Data.PEOPLE_FAN_R=peo_view
     while Data.flag:#循环开始
         if Data.FX_S_R<21:
-            count_R_O_V(time_logo)
+            count_R_O_V()
         for p in allPeople:#遍历行人
             Income.outDirection(p, allPeople)#计算收益
             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
@@ -81,25 +99,34 @@ def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_vie
             Rule.PeopleMove(p, direction)#行人移动
         if len(allPeople)==0:
             Data.flag=False
+        a_p = 0
+        b_p = 0
+        for p in allPeople:
+            if Data.FX_R ** 2 < ((p.x - Data.FX_M) ** 2 + (p.x - Data.FX_M) ** 2) < Data.FX_S_R ** 2:
+                a_p = a_p + 1
+                if p.isInGrend == 2:
+                    b_p = b_p + 1
+        result_time.append(time_logo)
+        if a_p == 0:
+            result_rote.append(0)
+        else:
+            result_rote.append(b_p / a_p)
         time_logo = time_logo + 1
-    # print(time_logo)
-    # print("\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
-
-    return time_logo
+    result_all.append(result_time)
+    result_all.append(result_rote)
+    return result_all
 def insertDB_force_test():
     '''此方法为插入数据库方法，提供各种参数，循环运行run_insert并接受参数，将其录入数据库'''
-    connect = pymysql.connect(host='localhost', user='root', password='334455', db='pedestrian')  # 获取链接
+    connect = pymysql.connect(host='localhost', user='root', password='334455', db='pedestrian_fix_20180506')  # 获取链接
 
     '''设置循环参数'''
-    list_case = [0,1,2]#危险源位置
-    list_density = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.9]#行人密度
-    list_radius_core = [9,18,27]#危险源半径
-    list_radius_ob=[70,80,90,100]#危险源边缘半径
+    list_case = [3]#危险源位置
+    list_density = [0.9]#行人密度
+    list_radius_core = [8]#危险源半径
+    list_radius_ob=[15,20]#危险源边缘半径
     # list_radius_v_increase = [0, 0.5]  # 危险源边缘增长速度
-    list_radius_v_increase=[1]#危险源边缘增长速度
-    list_force=[50]#行人影响力
-    list_force_tyoe=[1]#行人影响力类型
-    list_people_view=[10]#行人视野半径
+    list_radius_v_increase=[0]#危险源边缘增长速度
+    list_force=[10,20,30,40,50,60,70,80,90,100]#行人影响力
     list_steps = [0,1,2,3,4]
     '''参数设置结束'''
     try:
@@ -107,25 +134,112 @@ def insertDB_force_test():
             for l_c in list_case:
                 for l_d in list_density:
                     for l_r_c in list_radius_core:
-                        for l_r_v_i in list_radius_v_increase:
-                            for l_f in list_force:
-                                for l_f_t in list_force_tyoe:
-                                    for l_p_v in list_people_view:
-                                        for l_s in list_steps:
-                                            time_logo=run_insert(l_c,l_d,l_r_c,l_r_c,l_r_v_i,l_f,l_f_t,l_p_v,l_s)
-                                            sql='insert into pedestrian.danger_double_r_view (density,case_s,force_s,r_c,r_o,r_o_v,r_view,steps,time_logo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-                                            cursor.execute(sql,[l_d,l_c,l_f,l_r_c,l_r_c,l_r_v_i,l_p_v,l_s,time_logo])
+                        for l_r_o in list_radius_ob:
+                            for l_r_v_i in list_radius_v_increase:
+                                for l_f in list_force:
+                                    for l_s in list_steps:
+                                        print("case:", l_c, "-density:", l_d, "-核心半径:", l_r_c, "-边缘半径:", l_r_c,
+                                              "-增长速度:", l_r_v_i, "-影响力:", l_f, "-步数:", l_s)
+                                        all_res=run_insert(l_d,l_c,l_r_c,l_r_o,l_r_v_i,l_f)
+                                        sql='insert into pedestrian_fix_20180506.time_and_rote (density,case_s,r_c,r_o,force_s,v,step_s,time_s,rato) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+                                        for i_t in range(len(all_res[0])):
+                                            cursor.execute(sql,[l_d,l_c,l_r_c,l_r_o,l_f,l_r_v_i,l_s,all_res[0][i_t],all_res[1][i_t]])
                                             connect.commit()
-                                            print("case:",l_c,"-density:",l_d,"-核心半径:",l_r_c,"-边缘半径:",l_r_c,"-增长速度:",l_r_v_i,"-影响力:",l_f,"-影响力类型:",l_f_t,"-视野半径:",l_p_v,"-步数:",l_s,"----当前时间:",time_logo)
     finally:  # 如果发生异常，关闭数据库
         connect.close()
 
 
 if __name__=='__main__':
-    # insertDB()
     # run_view()
     insertDB_force_test()
 
+
+# def insertDB_force_test():
+#     '''此方法为插入数据库方法，提供各种参数，循环运行run_insert并接受参数，将其录入数据库'''
+#     connect = pymysql.connect(host='localhost', user='root', password='334455', db='pedestrian')  # 获取链接
+#
+#     '''设置循环参数'''
+#     list_case = [0,1,2]#危险源位置
+#     list_density = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.9]#行人密度
+#     list_radius_core = [9,18,27]#危险源半径
+#     list_radius_ob=[70,80,90,100]#危险源边缘半径
+#     # list_radius_v_increase = [0, 0.5]  # 危险源边缘增长速度
+#     list_radius_v_increase=[1]#危险源边缘增长速度
+#     list_force=[50]#行人影响力
+#     list_force_tyoe=[1]#行人影响力类型
+#     list_people_view=[10]#行人视野半径
+#     list_steps = [0,1,2,3,4]
+#     '''参数设置结束'''
+#     try:
+#         with connect.cursor() as cursor:  # 打开游标
+#             for l_c in list_case:
+#                 for l_d in list_density:
+#                     for l_r_c in list_radius_core:
+#                         for l_r_v_i in list_radius_v_increase:
+#                             for l_f in list_force:
+#                                 for l_f_t in list_force_tyoe:
+#                                     for l_p_v in list_people_view:
+#                                         for l_s in list_steps:
+#                                             time_logo=run_insert(l_c,l_d,l_r_c,l_r_c,l_r_v_i,l_f,l_f_t,l_p_v,l_s)
+#                                             sql='insert into pedestrian.danger_double_r_view (density,case_s,force_s,r_c,r_o,r_o_v,r_view,steps,time_logo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+#                                             cursor.execute(sql,[l_d,l_c,l_f,l_r_c,l_r_c,l_r_v_i,l_p_v,l_s,time_logo])
+#                                             connect.commit()
+#                                             print("case:",l_c,"-density:",l_d,"-核心半径:",l_r_c,"-边缘半径:",l_r_c,"-增长速度:",l_r_v_i,"-影响力:",l_f,"-影响力类型:",l_f_t,"-视野半径:",l_p_v,"-步数:",l_s,"----当前时间:",time_logo)
+#     finally:  # 如果发生异常，关闭数据库
+#         connect.close()
+
+# def run_insert(case_s,density,radius,radius_ob,radius_v,force,force_type,peo_view,steps):
+#     '''此方法为运行方法，带参数接受和返回，不带图像显示'''
+#     Data.flag=True
+#     time_logo=0
+#
+#     if case_s==0:#危险源位置设置
+#         Data.FX_N=19
+#     elif case_s==1:
+#         Data.FX_N = 15
+#     elif case_s==2:
+#         Data.FX_N = 10
+#     elif case_s==3:
+#         Data.FX_N = 5
+#     elif case_s==4:
+#         Data.FX_N = 2
+#
+#     Data.PEOPLE_DENSYTY=density
+#     Data.PEOPLE_NUMBER=Data.count_PEOPLE_NUMBER(density)
+#
+#     Data.FX_SIGMA_2 = radius  # 危险源大小
+#     Data.FX_R = Data.count_FX_R(radius)  # 影响范围半径
+#     Data.FX_P = Data.count_FX_P(radius)  # 系数 p越大 高斯函数的圆形越大
+#
+#     Data.FX_S_SIGMA_2=radius_ob
+#     Data.FX_S_R=Data.count_FX_S_R(radius_ob)
+#     Data.FX_S_P=Data.count_FX_S_P(radius_ob)
+#
+#     Data.FX_S_V=radius_v
+#
+#     Data.PEOPLE_FORCE=force
+#
+#     if force_type==0:# fix
+#         allPeople = InitPeolple.creatPeople_force_fix()
+#     else: #random
+#         allPeople=InitPeolple.creatPeople_force_random()
+#
+#     Data.PEOPLE_FAN_R=peo_view
+#     while Data.flag:#循环开始
+#         if Data.FX_S_R<21:
+#             count_R_O_V(time_logo)
+#         for p in allPeople:#遍历行人
+#             Income.outDirection(p, allPeople)#计算收益
+#             direction = max(p.allInComeBySort.items(), key=lambda x: x[1])[0]#获取方向
+#             Rule.chickOverAround(p, allPeople)#检测是否到达出口
+#             Rule.PeopleMove(p, direction)#行人移动
+#         if len(allPeople)==0:
+#             Data.flag=False
+#         time_logo = time_logo + 1
+#     # print(time_logo)
+#     # print("\033[4;32;40mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m")
+#
+#     return time_logo
 '''以下方法为测试用'''
 def run_force_test(double_r,steps):
     time_logo=0

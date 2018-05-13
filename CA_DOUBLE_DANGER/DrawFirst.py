@@ -55,7 +55,7 @@ def drawPeople(P=[]):
                         G_y.append(p.y)
 
                 else:
-                    if p.type:#如果行人方向为 【右】
+                    if p.type==False:#如果行人方向为 【右】
                         R_x.append(p.x)#添加x坐标
                         R_y.append(p.y)#添加y坐标
                     else:#如果行人方向为【左】
@@ -67,8 +67,8 @@ def drawPeople(P=[]):
     plt.subplot(1,1,1)#绘图板布局  不知道怎么取消这一行
     plt.scatter(G_x_r,G_y_r,c='k',marker='<')
     plt.scatter(G_x_l,G_y_l,c='k',marker='>')
-    plt.scatter(G_x,G_y,c='k',marker='s')
-    plt.scatter(de_x,de_y,c='b',marker='D')
+    plt.scatter(G_x,G_y,c='k',marker='s')#s-正方形
+    plt.scatter(de_x,de_y,c='b',marker='D')#d-菱形
     plt.scatter(R_x,R_y,c='r',marker='<')#绘制行人--散点图
     plt.scatter(L_x,L_y,c='b',marker='>')
 
@@ -90,7 +90,7 @@ def drawPeople(P=[]):
     # ---------------------------------------------------
     while Data.figure_pause:
         plt.pause(1)  # 暂停1s
-    plt.pause(1)#暂停1s
+    plt.pause(0.01)#暂停1s
 
 '''关闭按钮动作'''
 def closeFigure(event):

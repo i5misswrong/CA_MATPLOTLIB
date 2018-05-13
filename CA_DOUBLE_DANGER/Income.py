@@ -93,7 +93,7 @@ def countRandom(p):
 '''默认方向收益'''
 def countDefine(p):
     p.defineDirectionIncome={1:0.0,2:0.0,3:0.0,4:0.0,5:0.0,6:0.0,7:0.0,8:0.0,9:0.0}
-    if p.type:
+    if p.type==False:
        p.defineDirectionIncome[4]=100
        p.defineDirectionIncome[1]=90
        p.defineDirectionIncome[7]=90
